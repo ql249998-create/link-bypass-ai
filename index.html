@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#090611">
+<title>LINK BYPASS AI — API</title>
+<style>
+:root{--bg:#090611;--panel:#130d20;--purple:#a855f7;--text:#f5efff;--muted:#a99bbd;--line:#39244f;--green:#6ee7b7}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#351052 0,transparent 48%),var(--bg);color:var(--text);font-family:ui-monospace,Consolas,monospace;padding:22px 14px 34px}.wrap{max-width:760px;margin:auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:36px}.brand{font-weight:900;letter-spacing:1.5px;font-size:15px}.brand b{color:var(--purple)}.status{font-size:11px;color:var(--green);border:1px solid #245b4a;border-radius:999px;padding:7px 10px}
+.hero{text-align:center;margin-bottom:28px}.logo{width:66px;height:66px;margin:0 auto 18px;border:1px solid var(--purple);border-radius:20px;display:grid;place-items:center;color:#d8b4fe;font-size:30px;box-shadow:0 0 25px #a855f755,inset 0 0 22px #a855f722}
+h1{font-size:clamp(27px,7vw,42px);margin:0 0 12px;letter-spacing:-1px}h1 span{color:#c084fc;text-shadow:0 0 18px #a855f788}.sub{color:var(--muted);font:14px/1.7 system-ui,sans-serif;max-width:500px;margin:auto}
+.card{background:linear-gradient(145deg,#171022,#0e0a17);border:1px solid var(--line);border-radius:20px;padding:19px;box-shadow:0 18px 55px #0006}.label{font-size:11px;letter-spacing:1.6px;color:#c4b5fd;margin:14px 0 10px;display:block}.label:first-child{margin-top:0}
+input{width:100%;background:#090611;border:1px solid #49315f;border-radius:12px;padding:14px 13px;color:white;font:14px system-ui,sans-serif;outline:none}input:focus{border-color:var(--purple);box-shadow:0 0 0 3px #a855f722}
+button{font:700 13px ui-monospace,monospace;border:0;border-radius:12px;padding:14px 16px;cursor:pointer}.primary{width:100%;margin-top:12px;background:linear-gradient(135deg,#a855f7,#7c3aed);color:white;box-shadow:0 6px 22px #9333ea44}.primary:disabled{opacity:.6;cursor:wait}.secondary{background:#241532;border:1px solid #55356e;color:#e9d5ff}
+.note{font:12px/1.6 system-ui,sans-serif;color:var(--muted);margin:12px 1px 0}.result{display:none;margin-top:16px;padding:15px;border:1px solid #3b2b4b;border-radius:14px;background:#0b0811}.result.show{display:block}.resulthead{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.resulthead strong{font-size:12px;color:var(--green);letter-spacing:1px}#message{font:13px/1.6 system-ui,sans-serif;color:#d8cde5;overflow-wrap:anywhere}#output{display:block;color:#c4b5fd;overflow-wrap:anywhere;font:13px/1.6 system-ui,sans-serif;margin:9px 0}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.small{font-size:12px;padding:10px 12px}.footer{text-align:center;color:#786b89;font:11px/1.7 system-ui,sans-serif;margin-top:26px}
+@media(max-width:430px){.status{font-size:10px}.card{padding:15px}}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div class="brand">◈ <b>LINK</b> BYPASS AI</div><div class="status">● API MODE</div></header>
+<section class="hero"><div class="logo">⟠</div><h1>LINK <span>BYPASS</span></h1><p class="sub">Phân tích chuyển hướng bằng API riêng — giao diện cyber neon, tối ưu điện thoại.</p></section>
+<main class="card">
+<label class="label" for="apiInput">// API ENDPOINT</label>
+<input id="apiInput" type="url" placeholder="https://your-api.example.com/resolve" autocomplete="url">
+<p class="note">Nhập địa chỉ API đã triển khai từ file server.js. API phải nhận JSON {"url":"https://..."} và trả về {"url":"https://link-dich..."}.</p>
+<label class="label" for="linkInput">// LINK RÚT GỌN</label>
+<input id="linkInput" type="url" inputmode="url" placeholder="https://short.example/abc" autocomplete="url">
+<button id="processBtn" class="primary">PHÂN TÍCH BẰNG API ↗</button>
+<div id="result" class="result" aria-live="polite"><div class="resulthead"><strong id="resultTitle">KẾT QUẢ</strong><span id="badge" class="status">READY</span></div><div id="message"></div><a id="output" href="#" target="_blank" rel="noopener noreferrer" hidden></a><div class="actions"><button id="copyBtn" class="secondary small" hidden>▣ SAO CHÉP URL</button><button id="openBtn" class="secondary small" hidden>↗ MỞ LIÊN KẾT</button></div></div>
+</main><footer class="footer">LINK BYPASS AI // API EDITION<br>Chỉ dùng với liên kết bạn có quyền truy cập. Không vượt đăng nhập, CAPTCHA hoặc cơ chế bảo vệ.</footer></div>
+<script>
+const $=id=>document.getElementById(id);let finalUrl='';
+function show(title,msg,status='INFO'){$('result').classList.add('show');$('resultTitle').textContent=title;$('message').textContent=msg;$('badge').textContent=status}
+function valid(raw){try{const u=new URL(raw.trim());return ['http:','https:'].includes(u.protocol)?u:null}catch{return null}}
+function clearResult(){$('output').hidden=true;$('copyBtn').hidden=true;$('openBtn').hidden=true;finalUrl=''}
+$('processBtn').addEventListener('click',async()=>{
+ clearResult();const api=valid($('apiInput').value),url=valid($('linkInput').value);
+ if(!api){show('THIẾU API','Nhập endpoint API đã triển khai trước.','API?');return}
+ if(!url){show('LINK KHÔNG HỢP LỆ','Nhập URL bắt đầu bằng http:// hoặc https://.','ERROR');return}
+ $('processBtn').disabled=true;$('processBtn').textContent='ĐANG PHÂN TÍCH…';show('ĐANG PHÂN TÍCH','Đang gửi link đến API…','WAIT');
+ try{
+  const res=await fetch(api.href,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({url:url.href})});
+  const data=await res.json();
+  if(!res.ok)throw new Error(data.error||('API trả về HTTP '+res.status));
+  const resolved=valid(data.url||data.finalUrl||'');
+  if(!resolved)throw new Error('API không trả về URL đích hợp lệ.');
+  finalUrl=resolved.href;$('output').href=finalUrl;$('output').textContent=finalUrl;$('output').hidden=false;$('copyBtn').hidden=false;$('openBtn').hidden=false;
+  show('ĐÃ LẤY LINK ĐÍCH','API đã trả về URL đích. Hãy kiểm tra miền trước khi mở.','SUCCESS');
+ }catch(e){show('KHÔNG THỂ LẤY LINK',e.message||'Không kết nối được API. Kiểm tra endpoint, mạng và cấu hình CORS.','ERROR')}
+ finally{$('processBtn').disabled=false;$('processBtn').textContent='PHÂN TÍCH BẰNG API ↗'}
+});
+$('copyBtn').addEventListener('click',async()=>{if(!finalUrl)return;try{await navigator.clipboard.writeText(finalUrl);$('copyBtn').textContent='✓ ĐÃ SAO CHÉP'}catch{show('SAO CHÉP THỦ CÔNG','Nhấn giữ URL kết quả để sao chép.','COPY');}setTimeout(()=>$('copyBtn').textContent='▣ SAO CHÉP URL',1700)});
+$('openBtn').addEventListener('click',()=>{if(finalUrl)window.open(finalUrl,'_blank','noopener,noreferrer')});
+$('linkInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('processBtn').click()});
+</script></body></html>
